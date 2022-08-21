@@ -14,22 +14,8 @@
 import './assets/styles.css'
 import { useState } from 'react'
 import MovieDetail from './components/MovieDetail';
-import { movies } from './assets/movies';
-
-const discountRules = [
-  {
-    m: [3, 2],
-    discount: 0.25
-  },
-  {
-    m: [2, 4, 1],
-    discount: 0.5
-  },
-  {
-    m: [4, 2],
-    discount: 0.1
-  } 
-];
+import { movies } from './utils/movies';
+import { calculateDiscountFactor } from './utils/discounts';
 
 export default function Exercise01 () {
   const [cart, setCart] = useState({
@@ -96,13 +82,16 @@ export default function Exercise01 () {
 
   const getTotal = (currentCart) => {
     let total = 0;
+    const itemsIds = [];
     Object.values(currentCart).map(item => {
       const movie = movies.find(movie => movie.id === item.id);
       if (movie) {
         total += movie.price * item.quantity;
+        itemsIds.push(item.id);
       }
     });
-    return total;
+    const discount = calculateDiscountFactor(itemsIds);
+    return total - total * discount;
   }
 
   return (
