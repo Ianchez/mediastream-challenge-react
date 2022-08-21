@@ -14,6 +14,8 @@
 
 import "./assets/styles.css";
 import { useEffect, useState } from "react";
+import { getMovies } from './api/movies';
+import { getGenres } from "./api/genres";
 
 const MOVIE_ORDER_BY = {
   YearAsc: 'Order Ascending',
@@ -30,40 +32,26 @@ export default function Exercise02 () {
 
   const handleGenresFetch = () => {
     setLoading(true);
-    console.log('Getting genres');
-    fetch('http://localhost:3001/genres')
-      .then(res => res.json())
-      .then(json => {
-        setGenres(json);
-        setSelectedGenre(json[0]);
-        setLoading(false);
-      }).catch(() => {
-        console.log('Run yarn movie-api for fake api')
-      });
+    getGenres().then(response => {
+      setGenres(response);
+      setSelectedGenre(response[0]);
+      setLoading(false);
+    })
   };
 
-  const handleMovieFetch = (genre) => {
+  const handleMoviesFetch = () => {
     setLoading(true);
     setFetchCount(fetchCount + 1);
-    console.log('Getting movies')
-    fetch(`http://localhost:3001/movies?_limit=50&genres_like=${genre}`)
-      .then(res => res.json())
-      .then(json => {
-        setMovies(json)
-        setLoading(false)
-      })
-      .catch(() => {
-        console.log('Run yarn movie-api for fake api')
-      });
+    getMovies().then(response => {
+      setMovies(response);
+      setLoading(false)
+    });
   };
 
   useEffect(() => {
     handleGenresFetch();
+    handleMoviesFetch();
   }, []);
-
-  useEffect(() => {
-    handleMovieFetch(selectedGenre);
-  }, [selectedGenre]);
 
   const setMovieOrderHandler = () => {
     if (selectedOrder === MOVIE_ORDER_BY.YearAsc) setSelectedOrder(MOVIE_ORDER_BY.YearDesc); 
@@ -76,7 +64,7 @@ export default function Exercise02 () {
       placeholder="Search by genre..."
       onChange={(event) => setSelectedGenre(event.target.value)}
     >
-      {genres.map(genre => <option value={genre}>{genre}</option>)}
+      {genres.map(genre => <option value={genre} key={`${genre}-option`}>{genre}</option>)}
     </select>
   );
 
@@ -96,7 +84,7 @@ export default function Exercise02 () {
         </div>
       ) : (
         <ul className="movie-library__list">
-          {orderMovies(movies, selectedOrder).map(movie => (
+          {orderMovies(filterMoviesByGenre(movies, selectedGenre), selectedOrder).map(movie => (
             <li key={movie.id} className="movie-library__card">
               <img src={movie.posterUrl} alt={movie.title} />
               <ul>
@@ -113,6 +101,8 @@ export default function Exercise02 () {
     </section>
   );
 }
+
+const filterMoviesByGenre = (moviesArray, genre) => moviesArray.filter(movie => movie.genres.includes(genre));
 
 const orderMovies = (moviesArray, orderBy) => {
   if (orderBy === MOVIE_ORDER_BY.YearAsc) {
