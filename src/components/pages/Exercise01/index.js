@@ -39,20 +39,33 @@ export default function Exercise01 () {
     }
   })
 
-  const addToCartHandler = (movie) => {
-    let cartItem = cart[movie.id];
+  const addToCartHandler = (itemId) => {
+    let cartItem = cart[itemId];
     if (cartItem) {
       cartItem.quantity += 1;
     } else {
-      cartItem = { id: movie.id, quantity: 1 };
+      cartItem = { id: itemId, quantity: 1 };
     }
-    setCart({...cart, [movie.id]: cartItem});
+    setCart({ ...cart, [itemId]: cartItem });
+  };
+
+  const decrementCartItem = (itemId) => {
+    const cartItem = cart[itemId];
+    if (cartItem) {
+      if (cartItem.quantity > 1) {
+        cartItem.quantity -= 1;
+        setCart({ ...cart, [itemId]: cartItem });
+      } else {
+        delete cart[itemId];
+        setCart({ ...cart });
+      }
+    }
   };
 
   const movieList = movies.map(movie => (
     <li className="movies__list-card" key={`movie-${movie.id}-list`}>
       <MovieDetail movie={movie}/>
-      <button onClick={() => addToCartHandler(movie)}>
+      <button onClick={() => addToCartHandler(movie.id)}>
         Add to cart
       </button>
     </li>
@@ -66,13 +79,13 @@ export default function Exercise01 () {
         <li className="movies__cart-card" key={`movie-${movie.id}-cart-item`}>
           <MovieDetail movie={movie}/>
           <div className="movies__cart-card-quantity">
-            <button onClick={() => console.log('Decrement quantity', movie)}>
+            <button onClick={() => decrementCartItem(movie.id)}>
               -
             </button>
             <span>
               {item.quantity}
             </span>
-            <button onClick={() => console.log('Increment quantity', movie)}>
+            <button onClick={() => addToCartHandler(movie.id)}>
               +
             </button>
           </div>
