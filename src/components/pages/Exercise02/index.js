@@ -17,10 +17,7 @@ import { useEffect, useState } from "react";
 import { getMovies } from './api/movies';
 import { getGenres } from "./api/genres";
 
-const MOVIE_ORDER_BY = {
-  YearAsc: 'Order Ascending',
-  YearDesc: 'Order Descending',
-};
+import { MOVIE_ORDER_BY, orderMovies, filterMoviesByGenre } from "./utils/movies";
 
 export default function Exercise02 () {
   const [genres, setGenres] = useState(['Search by genre...']);
@@ -63,56 +60,49 @@ export default function Exercise02 () {
       name="genre"
       placeholder="Search by genre..."
       onChange={(event) => setSelectedGenre(event.target.value)}
+      className="green-input selector"
     >
       {genres.map(genre => <option value={genre} key={`${genre}-option`}>{genre}</option>)}
     </select>
   );
 
   return (
-    <section className="movie-library">
-      <h1 className="movie-library__title">
-        Movie Library
-      </h1>
-      <div className="movie-library__actions">
-        {genreSelector}
-        <button onClick={() => setMovieOrderHandler()}>{selectedOrder}</button>
-      </div>
-      {loading ? (
-        <div className="movie-library__loading">
-          <p>Loading...</p>
-          <p>Fetched {fetchCount} times</p>
+    <>
+      <section className="movie-library-header">
+        <h1 className="movie-library__title">
+          Movie Library
+        </h1>
+        <div className="movie-library__actions">
+          {genreSelector}
+          <button
+            className="green-input button"
+            onClick={() => setMovieOrderHandler()}
+          >
+            {selectedOrder}
+          </button>
         </div>
-      ) : (
-        <ul className="movie-library__list">
-          {orderMovies(filterMoviesByGenre(movies, selectedGenre), selectedOrder).map(movie => (
-            <li key={movie.id} className="movie-library__card">
-              <img src={movie.posterUrl} alt={movie.title} />
-              <ul>
-                <li>ID: {movie.id}</li>
-                <li>Title: {movie.title}</li>
-                <li>Year: {movie.year}</li>
-                <li>Runtime: {movie.runtime}</li>
-                <li>Genres: {movie.genres.join(', ')}</li>
-              </ul>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+      </section>
+      <section className="movie-library-body">
+        {loading ? (
+          <div className="movie-library__loading">
+            <p>Loading...</p>
+            <p>Fetched {fetchCount} times</p>
+          </div>
+        ) : orderMovies(filterMoviesByGenre(movies, selectedGenre), selectedOrder).map(movie => (
+          <div
+            className="movie-library__card"
+            style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0) 40%, rgba(170, 235, 80, 0.8) 75%, rgba(170, 235, 80, 0.95) 90%), url(${movie.posterUrl})` }}
+          >
+            <ul>
+              <li>{movie.title}</li>
+              <li>{movie.genres.join(', ')}</li>
+              <li>{movie.year}</li>
+            </ul>
+          </div>
+        ))}
+      </section>
+    </>
   );
 }
 
-const filterMoviesByGenre = (moviesArray, genre) => moviesArray.filter(movie => movie.genres.includes(genre));
-
-const orderMovies = (moviesArray, orderBy) => {
-  if (orderBy === MOVIE_ORDER_BY.YearAsc) {
-    return moviesArray.sort((a, b) => parseInt(a.year) - parseInt(b.year));
-  }
-
-  if (orderBy === MOVIE_ORDER_BY.YearDesc) {
-    return moviesArray.sort((a, b) => parseInt(b.year) - parseInt(a.year));
-  }
-
-  return moviesArray;
-}
 

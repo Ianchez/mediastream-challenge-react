@@ -1,12 +1,32 @@
-.movie-library {
+.movie-library-header {
+  background-image: 
+    /* top, transparent red */
+    linear-gradient( 
+      rgba(0, 0, 0, 0.0),
+      rgba(0, 0, 0, 0.2) 25%,
+      var(--black) 38%
+    ),
+    /* your image */
+    url('./mountains.jpeg');
+  background-size: 100% 800px;
+  background-position: center -120px;
+  color: var(--white);
+  min-height: 10vh;
+  padding: 4em 4em;
+}
+
+.movie-library-body {
   background-color: var(--black);
   color: var(--white);
   min-height: 100vh;
-  padding: 2em;
+  width: 100%;
+  padding: 0em 3em;
+  display: inline-block;
 }
 
 .movie-library__title {
   font-size: 2em;
+  font-weight: bold;
   margin-bottom: 1em;
 }
 
@@ -26,6 +46,7 @@
 
 .movie-library__loading {
   text-align: center;
+  float: center;
   width: 100%;
   background-color: #222222;
   padding: 1.25em 0;
@@ -38,20 +59,46 @@
 }
 
 .movie-library__card {
-  background-color: #333333;
-  margin-bottom: 1em;
+  background-color: white;
+  float: left;
+  height: 450px;
+  width: 300px;
+  background-size: 100% 100%;
+  margin: 20px 20px;
+  border-radius: 12px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
 }
 
-.movie-library__card img {
-  width: 10em;
-}
 
 .movie-library__card ul {
   padding: 1em;
 }
 
 .movie-library__card li {
-  line-height: 120%;
+  line-height: 140%;
+  font-weight: 200;
+}
+
+.movie-library__card li:first-child {
+  font-weight: 900;
+}
+
+.green-input {
+  border: 2px solid rgb(160, 235, 80);
+  background-color: rgb(160, 235, 80);
+  height: 38px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Poppins';
+}
+
+.button {
+  min-width: 180px;
+  border-radius: 0px 6px 6px 0px;
+}
+
+.selector {
+  background-color: white;
+  border-radius: 6px 0px 0px 6px;
 }

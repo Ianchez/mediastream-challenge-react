@@ -52,7 +52,7 @@ table {
 :root {
   --black: #1B1B1B;
   --white: #F5F5F5;
-  --ms-green: rgb(151, 215, 0);
+  --ms-green: rgb(170, 215, 0);
   font-size: 16px;
   font-family: 'Poppins', sans-serif;
 }
