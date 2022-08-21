@@ -15,10 +15,16 @@
 import "./assets/styles.css";
 import { useEffect, useState } from "react";
 
+const MOVIE_ORDER_BY = {
+  YearAsc: 'Order Ascending',
+  YearDesc: 'Order Descending',
+};
+
 export default function Exercise02 () {
   const [genres, setGenres] = useState(['Search by genre...']);
   const [selectedGenre, setSelectedGenre] = useState('');
   const [movies, setMovies] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(MOVIE_ORDER_BY.YearDesc);
   const [fetchCount, setFetchCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -29,15 +35,16 @@ export default function Exercise02 () {
       .then(res => res.json())
       .then(json => {
         setGenres(json);
+        setSelectedGenre(json[0]);
         setLoading(false);
       }).catch(() => {
         console.log('Run yarn movie-api for fake api')
-      })
+      });
   };
 
   const handleMovieFetch = (genre) => {
-    setLoading(true)
-    setFetchCount(fetchCount + 1)
+    setLoading(true);
+    setFetchCount(fetchCount + 1);
     console.log('Getting movies')
     fetch(`http://localhost:3001/movies?_limit=50&genres_like=${genre}`)
       .then(res => res.json())
@@ -47,7 +54,7 @@ export default function Exercise02 () {
       })
       .catch(() => {
         console.log('Run yarn movie-api for fake api')
-      })
+      });
   };
 
   useEffect(() => {
@@ -56,7 +63,12 @@ export default function Exercise02 () {
 
   useEffect(() => {
     handleMovieFetch(selectedGenre);
-  }, [selectedGenre])
+  }, [selectedGenre]);
+
+  const setMovieOrderHandler = () => {
+    if (selectedOrder === MOVIE_ORDER_BY.YearAsc) setSelectedOrder(MOVIE_ORDER_BY.YearDesc); 
+    if (selectedOrder === MOVIE_ORDER_BY.YearDesc) setSelectedOrder(MOVIE_ORDER_BY.YearAsc); 
+  }
 
   const genreSelector = (
     <select
@@ -75,7 +87,7 @@ export default function Exercise02 () {
       </h1>
       <div className="movie-library__actions">
         {genreSelector}
-        <button>Order Descending</button>
+        <button onClick={() => setMovieOrderHandler()}>{selectedOrder}</button>
       </div>
       {loading ? (
         <div className="movie-library__loading">
@@ -84,7 +96,7 @@ export default function Exercise02 () {
         </div>
       ) : (
         <ul className="movie-library__list">
-          {movies.map(movie => (
+          {orderMovies(movies, selectedOrder).map(movie => (
             <li key={movie.id} className="movie-library__card">
               <img src={movie.posterUrl} alt={movie.title} />
               <ul>
@@ -101,3 +113,16 @@ export default function Exercise02 () {
     </section>
   );
 }
+
+const orderMovies = (moviesArray, orderBy) => {
+  if (orderBy === MOVIE_ORDER_BY.YearAsc) {
+    return moviesArray.sort((a, b) => parseInt(a.year) - parseInt(b.year));
+  }
+
+  if (orderBy === MOVIE_ORDER_BY.YearDesc) {
+    return moviesArray.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+  }
+
+  return moviesArray;
+}
+
