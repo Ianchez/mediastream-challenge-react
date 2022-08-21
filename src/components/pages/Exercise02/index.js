@@ -16,15 +16,30 @@ import "./assets/styles.css";
 import { useEffect, useState } from "react";
 
 export default function Exercise02 () {
-  const [movies, setMovies] = useState([])
-  const [fetchCount, setFetchCount] = useState(0)
-  const [loading, setLoading] = useState(false)
+  const [genres, setGenres] = useState(['Search by genre...']);
+  const [selectedGenre, setSelectedGenre] = useState('');
+  const [movies, setMovies] = useState([]);
+  const [fetchCount, setFetchCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const handleMovieFetch = () => {
+  const handleGenresFetch = () => {
+    setLoading(true);
+    console.log('Getting genres');
+    fetch('http://localhost:3001/genres')
+      .then(res => res.json())
+      .then(json => {
+        setGenres(json);
+        setLoading(false);
+      }).catch(() => {
+        console.log('Run yarn movie-api for fake api')
+      })
+  };
+
+  const handleMovieFetch = (genre) => {
     setLoading(true)
     setFetchCount(fetchCount + 1)
     console.log('Getting movies')
-    fetch('http://localhost:3001/movies?_limit=50')
+    fetch(`http://localhost:3001/movies?_limit=50&genres_like=${genre}`)
       .then(res => res.json())
       .then(json => {
         setMovies(json)
@@ -33,11 +48,25 @@ export default function Exercise02 () {
       .catch(() => {
         console.log('Run yarn movie-api for fake api')
       })
-  }
+  };
 
   useEffect(() => {
-    handleMovieFetch()
-  }, [])
+    handleGenresFetch();
+  }, []);
+
+  useEffect(() => {
+    handleMovieFetch(selectedGenre);
+  }, [selectedGenre])
+
+  const genreSelector = (
+    <select
+      name="genre"
+      placeholder="Search by genre..."
+      onChange={(event) => setSelectedGenre(event.target.value)}
+    >
+      {genres.map(genre => <option value={genre}>{genre}</option>)}
+    </select>
+  );
 
   return (
     <section className="movie-library">
@@ -45,9 +74,7 @@ export default function Exercise02 () {
         Movie Library
       </h1>
       <div className="movie-library__actions">
-        <select name="genre" placeholder="Search by genre...">
-          <option value="genre1">Genre 1</option>
-        </select>
+        {genreSelector}
         <button>Order Descending</button>
       </div>
       {loading ? (
@@ -72,5 +99,5 @@ export default function Exercise02 () {
         </ul>
       )}
     </section>
-  )
+  );
 }
