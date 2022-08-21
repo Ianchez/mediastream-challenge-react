@@ -94,7 +94,16 @@ export default function Exercise01 () {
     }
   });
 
-  const getTotal = () => 0 // TODO: Implement this
+  const getTotal = (currentCart) => {
+    let total = 0;
+    Object.values(currentCart).map(item => {
+      const movie = movies.find(movie => movie.id === item.id);
+      if (movie) {
+        total += movie.price * item.quantity;
+      }
+    });
+    return total;
+  }
 
   return (
     <section className="exercise01">
@@ -108,7 +117,7 @@ export default function Exercise01 () {
           {shoppingCart}
         </ul>
         <div className="movies__cart-total">
-          <p>Total: ${getTotal()}</p>
+          <p>Total: ${getTotal(cart)}</p>
         </div>
       </div>
     </section>
