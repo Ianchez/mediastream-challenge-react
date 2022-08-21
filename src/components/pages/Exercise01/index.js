@@ -59,7 +59,6 @@ export default function Exercise01 () {
 
   const shoppingCart =  Object.values(cart).map(item => {
     const movie = movies.find(movie => movie.id === item.id);
-
     if (movie) {
       return (
         <li className="movies__cart-card" key={`movie-${movie.id}-cart-item`}>

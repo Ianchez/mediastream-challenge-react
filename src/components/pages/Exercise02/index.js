@@ -18,6 +18,7 @@ import { getMovies } from './api/movies';
 import { getGenres } from "./api/genres";
 
 import { MOVIE_ORDER_BY, orderMovies, filterMoviesByGenre } from "./utils/movies";
+import MovieCard from "./components/MovieCard";
 
 export default function Exercise02 () {
   const [genres, setGenres] = useState(['Search by genre...']);
@@ -62,8 +63,19 @@ export default function Exercise02 () {
       onChange={(event) => setSelectedGenre(event.target.value)}
       className="green-input selector"
     >
-      {genres.map(genre => <option value={genre} key={`${genre}-option`}>{genre}</option>)}
+      {genres.map(genre =>
+        <option value={genre} key={`${genre}-option`}>{genre}</option>
+      )}
     </select>
+  );
+
+  const orderByButton = (
+    <button
+      className="green-input button"
+      onClick={() => setMovieOrderHandler()}
+    >
+      {selectedOrder}
+    </button>
   );
 
   return (
@@ -74,32 +86,20 @@ export default function Exercise02 () {
         </h1>
         <div className="movie-library__actions">
           {genreSelector}
-          <button
-            className="green-input button"
-            onClick={() => setMovieOrderHandler()}
-          >
-            {selectedOrder}
-          </button>
+          {orderByButton}
         </div>
       </section>
       <section className="movie-library-body">
-        {loading ? (
-          <div className="movie-library__loading">
-            <p>Loading...</p>
-            <p>Fetched {fetchCount} times</p>
-          </div>
-        ) : orderMovies(filterMoviesByGenre(movies, selectedGenre), selectedOrder).map(movie => (
-          <div
-            className="movie-library__card"
-            style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0) 40%, rgba(170, 235, 80, 0.8) 75%, rgba(170, 235, 80, 0.95) 90%), url(${movie.posterUrl})` }}
-          >
-            <ul>
-              <li>{movie.title}</li>
-              <li>{movie.genres.join(', ')}</li>
-              <li>{movie.year}</li>
-            </ul>
-          </div>
-        ))}
+        {loading
+          ? (
+            <div className="movie-library__loading">
+              <p>Loading...</p>
+              <p>Fetched {fetchCount} times</p>
+            </div>
+          ) : 
+            orderMovies(filterMoviesByGenre(movies, selectedGenre), selectedOrder)
+              .map(movie => <MovieCard movie={movie}/>
+          )}
       </section>
     </>
   );
