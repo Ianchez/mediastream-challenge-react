@@ -13,9 +13,10 @@
 
 import './assets/styles.css'
 import { useState } from 'react'
-import MovieDetail from './components/MovieDetail';
 import { movies } from './utils/movies';
 import { getTotal } from './utils/cart';
+import MovieCartCard from './components/MovieCartCard';
+import MovieListCard from './components/MovieListCard';
 
 export default function Exercise01 () {
   const [cart, setCart] = useState({
@@ -48,36 +49,13 @@ export default function Exercise01 () {
     }
   };
 
-  const movieList = movies.map(movie => (
-    <li className="movies__list-card" key={`movie-${movie.id}-list`}>
-      <MovieDetail movie={movie}/>
-      <button onClick={() => addToCartHandler(movie.id)}>
-        Add to cart
-      </button>
-    </li>
-  ));
+  const movieList = movies.map(movie => 
+    <MovieListCard movie={movie} onClickAdd={addToCartHandler} />
+  );
 
-  const shoppingCart = Object.values(cart).map(item => {
-    const movie = movies.find(movie => movie.id === item.id);
-    if (movie) {
-      return (
-        <li className="movies__cart-card" key={`movie-${movie.id}-cart-item`}>
-          <MovieDetail movie={movie}/>
-          <div className="movies__cart-card-quantity">
-            <button onClick={() => decrementCartItemHandler(movie.id)}>
-              -
-            </button>
-            <span>
-              {item.quantity}
-            </span>
-            <button onClick={() => addToCartHandler(movie.id)}>
-              +
-            </button>
-          </div>
-        </li>
-      );
-    }
-  });
+  const shoppingCart = Object.values(cart).map(item =>
+    <MovieCartCard item={item} onDecrementClick={decrementCartItemHandler} onIncrementClick={addToCartHandler} />
+  );
 
   return (
     <section className="exercise01">

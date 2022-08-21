@@ -26,7 +26,7 @@ const calculateDiscountFactor = (itemsIds) => {
 export const getTotal = (currentCart, movies) => {
   let total = 0;
   const itemsIds = [];
-  Object.values(currentCart).map(item => {
+  Object.values(currentCart).forEach(item => {
     const movie = movies.find(movie => movie.id === item.id);
     if (movie) {
       total += movie.price * item.quantity;
