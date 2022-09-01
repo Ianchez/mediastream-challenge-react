@@ -8,8 +8,8 @@
   justify-content: center;
 }
 
-.movies__list, .movies__cart {
-  width: 24em;
+.movies__list, .movies__cart, .discounts_details {
+  width: 20em;
 }
 
 .movies__list {
@@ -49,6 +49,7 @@
   background-color: #222222;
   padding: 1em;
   border-radius: .2em;
+  margin-right: 2em;
 }
 
 .movies__cart-card {
@@ -89,4 +90,24 @@
 .movies__cart-total {
   margin-top: 1em;
   font-size: 1.25em;
+}
+
+.discounts_list {
+  background-color: #222222;
+  padding: 1em;
+  border-radius: .2em;
+  margin-right: 2em;
+}
+
+
+.discounts__detail-card {
+  background-color: #333333;
+  margin-bottom: 1rem;
+  padding: .75em;
+  border-radius: .2em;
+}
+
+.discounts__detail-card ul li {
+  font-size: 1em;
+  line-height: 120%;
 }
