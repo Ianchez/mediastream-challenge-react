@@ -1,4 +1,4 @@
-const discountRules = [
+export const discountRules = [
   {
     m: [3, 2],
     discount: 0.25

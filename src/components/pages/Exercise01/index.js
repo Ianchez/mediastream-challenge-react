@@ -14,7 +14,7 @@
 import './assets/styles.css'
 import { useState } from 'react'
 import { movies } from './utils/movies';
-import { getTotal } from './utils/cart';
+import { getTotal, discountRules } from './utils/cart';
 import MovieCartCard from './components/MovieCartCard';
 import MovieListCard from './components/MovieListCard';
 
@@ -57,6 +57,15 @@ export default function Exercise01 () {
     <MovieCartCard item={item} onDecrementClick={decrementCartItemHandler} onIncrementClick={addToCartHandler} />
   );
 
+  const discountsDetails = discountRules.map(discount => 
+    <li className="discounts__detail-card" key={`discount-${discount.m.join('')}-detail`}>
+      <ul>
+        <li>Combine IDs {discount.m.join(', ')}</li>
+        <li>to get {discount.discount * 100}% discount!</li>
+      </ul>
+    </li>
+  );
+
   return (
     <section className="exercise01">
       <div className="movies__list">
@@ -71,6 +80,11 @@ export default function Exercise01 () {
         <div className="movies__cart-total">
           <p>Total: ${getTotal(cart, movies)}</p>
         </div>
+      </div>
+      <div className='discounts_list'>
+        <ul>
+          {discountsDetails}
+        </ul>
       </div>
     </section>
   );
